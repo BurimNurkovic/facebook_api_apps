@@ -1,0 +1,58 @@
+= Facebook Feed Ruby bindings
+
+== Installation
+
+  > gem install facebook_feed
+
+== Requirements
+
+* Ruby 1.9.3 or above.
+* json, rest-client
+
+== Usage: Facebook Group Feed Download
+
+  > require 'facebook_feed'
+  > opts = { :feed_id => 123456789, :access_token => "AAACEdEose0cBAHqa7TcU11fyZBHjas26pn9DR0WxEguIzeFeintOZClb78AnhMibZBlRbZBiyVzD5b8rOgeI35cEX55m4rwk3XzBnhkCp0Qrd5cQJd0o" }
+  > downloader = FacebookFeed::FeedDownloader.new(opts)
+  > posts = downloader.download_posts if downloader.has_more_posts?
+  > puts JSON.pretty_generate(posts)
+
+The posts object in the example code above is an array of hash objects like the following
+    {
+      :poster => 'Name of message poster',
+      :message => 'Message text',
+      :type => 'Type of post',
+      :created_time => 'UTC time message was created',
+      :updated_time => 'UTC time message was updated',
+      :like_count => 'Number of likes the post has',
+      :comment_count => 'Number of comments the post has',
+      :comments => ['Array of comment data']
+    }
+
+A comment datum is itself a hash as well. It has the following structure:
+    {
+      :commenter => 'Name of person who made the comment',
+      :message => 'Comment text',
+      :created_time => 'UTC time comment was made',
+      :like_count => 'Number of likes the comment has'
+    }
+
+== How to obtain feed ID and access token
+
+Visit the Facebook Group whose feed you want to download. Take the ID from the URL. For example,
+if the URL is https://www.facebook.com/groups/1234567/, the feed ID is 1234567.
+
+To obtain the access token, visit the Graph API Explorer at https://developers.facebook.com/tools/explorer.
+You'll see a button that says "Get Access Token". Click on it, and select the permissions you'll
+need to access your group's feed. If your group is closed, you'll need user_groups and friends_groups
+permissions.
+
+== Release Notes
+
+1.0.4 (04/18/2013) - Fixed bug with InvalidFeedDownloaderError
+
+1.0.3 (04/18/2013) - Enforced stricter initialization of FacebookFeed::FeedDownloader
+
+1.0.2 (04/17/2013) - Fixed bug that deals with Facebook Group feed posts with no comment data
+
+1.0.1 (07/26/2012) - Released Ruby bindings for Facebook Groups feed API
